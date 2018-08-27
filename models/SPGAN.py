@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 import functools
-import sys
-import SPGAN
+import Utils.conv2d_same_padding
 class Discrimnator(nn.Module):
     def __init__(self, df_dim=64):
         super(Discrimnator, self).__init__()
