@@ -3,8 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 # the Conv2d mudule supports padding=="same" mode
-def conv2d_same_padding(input, weight, bias=None, stride=1, padding="VALID", dilation=1, groups=1):
-    print(padding)
+def conv2d_same_padding(input, weight, type, bias=None, stride=1, padding="VALID", dilation=1, groups=1):
     if padding == 'SAME':
         padding = 0
 
@@ -32,16 +31,26 @@ def conv2d_same_padding(input, weight, bias=None, stride=1, padding="VALID", dil
         print(type(padding), padding)        
         raise ValueError('Padding should be SAME, VALID or specific integer, but not {}.'.format(padding))
 
-    return F.conv2d(input, weight, bias, stride, padding=0,
-                    dilation=dilation, groups=groups)
+    if type == "Conv2d":
+        return F.conv2d(input, weight, bias, stride, padding=0,
+                        dilation=dilation, groups=groups)
+
+    elif type == "Conv2dTransposed":
+        return F.conv_transpose2d(input, weight, bias, stride, padding=0,
+                        dilation=dilation, groups=groups)
 
 
 
 class Conv2d_padding_same(nn.Conv2d):
 
     def forward(self, input):
-        print(self.stride, self.padding)
-        return conv2d_same_padding(input, self.weight, self.bias, self.stride, \
+        return conv2d_same_padding(input, self.weight, "Conv2d", self.bias, self.stride, \
+                                   self.padding, self.dilation, self.groups)
+
+class Conv2dTransposed_padding_same(nn.ConvTranspose2d):
+
+    def forward(self, input):
+        return conv2d_same_padding(input, self.weight, "Conv2dTransposed", self.bias, self.stride, \
                                    self.padding, self.dilation, self.groups)
 
 #x = torch.randn(3, 3, 256, 256)
