@@ -6,14 +6,17 @@ from glob import glob
 class dataset(torch.utils.data.Dataset):
 
     def __init__(self, root_A, root_B, opt):
-        self.images_A = glob(root_A + "/*.jpg")
-        self.images_B = glob(root_B + "/*.jpg")
+        # self.images_A = glob(root_A + "/*.jpg")
+        # self.images_B = glob(root_B + "/*.jpg")
+
+        self.images_A = glob(root_A + "/*.png")
+        self.images_B = glob(root_B + "/*.png")
         assert len(self.images_A) != 0
         assert len(self.images_B) != 0
         self.transfroms = transforms.Compose([
             transforms.Resize(opt.loadsize),
             transforms.RandomHorizontalFlip(),
-            transforms.RandomCrop(opt.cropsize),
+            # transforms.RandomCrop(opt.cropsize),
             transforms.ToTensor(),
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ])

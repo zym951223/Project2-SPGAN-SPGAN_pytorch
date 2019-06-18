@@ -131,6 +131,7 @@ class generator(nn.Module):
         return(self.net(x))
 
 input = torch.randn(1, 3, 256, 256)
+# input = torch.randn(1, 3, 300, 300)
 net =  discrimnator()
 ouput = net(input)
 print(ouput.size())

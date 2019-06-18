@@ -21,6 +21,24 @@ parser.add_argument("--epoch", type=int, default=6, help="the number of epoch")
 parser.add_argument("--cuda",  default=False, action="store_true", help="use cuda")
 parser.add_argument("--workers", type=int, default=2, help="number of data loading workers, default is 2")
 
+
+
+
+# def save_networks(self, epoch):
+#     """Save all the networks to the disk.
+
+#     Parameters:
+#     epoch (int) -- current epoch; used in the file name '%s_net_%s.pth' % (epoch, name)
+#     """
+#     for name in self.model_names:
+#         if isinstance(name, str):
+#             save_filename = '%s_net_%s.pth' % (epoch, name)
+#             save_path = os.path.join(self.save_dir, save_filename)
+#             net = getattr(self, 'net' + name)
+            
+#             torch.save(net.module.cpu().state_dict(), save_path)
+#             net.cuda(self.gpu_ids[0])
+                    
 opt = parser.parse_args()
 
 # ensure there are two folders in dataroot
@@ -63,9 +81,12 @@ loss_L2 = nn.MSELoss()
 loss_L1 = nn.L1Loss()
 
 # set the parameters
-lambda1 = 10.0
-lambda2 = 5.0
-lambda3= 2.0
+# lambda1 = 10.0
+# lambda2 = 5.0
+# lambda3= 2.0
+lambda1 = 1.0
+lambda2 = 1.0
+lambda3= 1.0
 margin = 2.0
 
 # create the image pool
@@ -77,6 +98,9 @@ fake_B_pool = Utils.util.ImagePool(50)
 ite_num = len(Dataset)
 label_real = torch.ones(1, 1, 30, 30).cuda()
 label_fake = torch.zeros(1, 1, 30, 30).cuda()
+# label_real = torch.ones(1, 1, 35, 35).cuda()
+# label_fake = torch.zeros(1, 1, 35, 35).cuda()
+
 
 # set visualzing
 root = os.path.join("checkpoints", "vehicle")
@@ -237,5 +261,12 @@ for epoch_num in range(opt.epoch):
             vutils.save_image(img_b, "checkpoints/vehicle/epoch-{}-ite-{}-b.jpg"\
                 .format(epoch_num+1, ite+1), normalize=True)
         
-        
-        
+
+        # cache our model every <save_epoch_num_freq> epoch_nums
+        if epoch_num % 10 == 0:
+            
+            torch.save(G, 'result_models/G_%d.pkl' %(epoch_num) )
+            torch.save(F, 'result_models/F_%d.pkl' %(epoch_num) )
+            torch.save(D_G, 'result_models/D_G_%d.pkl' %(epoch_num) )
+            torch.save(D_F, 'result_models/D_F_%d.pkl' %(epoch_num) )
+            torch.save(M, 'result_models/M_%d.pkl' %(epoch_num) )

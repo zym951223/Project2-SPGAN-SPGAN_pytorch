@@ -55,7 +55,8 @@ class Visualizer():
                 images = []
                 idx = 0
                 for label, image in visuals.items():
-                    image_numpy = Utils.util.tensor2im(image)
+                    # image_numpy = Utils.util.tensor2im(image)
+                    image_numpy = util.tensor2im(image)
                     label_html_row += '<td>%s</td>' % label
                     images.append(image_numpy.transpose([2, 0, 1]))
                     idx += 1
@@ -90,9 +91,11 @@ class Visualizer():
         if self.use_html and (save_result or not self.saved):  # save images to a html file
             self.saved = True
             for label, image in visuals.items():
-                image_numpy = Utils.util.tensor2im(image)
+                # image_numpy = Utils.util.tensor2im(image)
+                image_numpy = util.tensor2im(image)
                 img_path = os.path.join(self.img_dir, 'epoch%.3d_%s.png' % (epoch, label))
-                Utils.util.save_image(image_numpy, img_path)
+                # Utils.util.save_image(image_numpy, img_path)
+                util.save_image(image_numpy, img_path)
             # update website
             webpage = html.HTML(self.web_dir, 'Experiment name = %s' % self.name, reflesh=1)
             for n in range(epoch, 0, -1):
